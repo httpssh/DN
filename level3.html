@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level 3 - Choose Your Fate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    @font-face {
+      font-family: "DEATHNOTE Font";
+      src: url("https://db.onlinewebfonts.com/t/dd32798ad43b887f093f144d8ac8e017.ttf") format("truetype");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'DEATHNOTE Font', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    h1 {
+      color: red;
+      font-size: 6vw;
+      margin-bottom: 40px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .fate-button {
+      background: darkred;
+      border: 2px solid crimson;
+      color: white;
+      font-size: 5vw;
+      padding: 15px 25px;
+      cursor: pointer;
+      font-family: 'DEATHNOTE Font';
+      transition: 0.3s;
+      min-width: 120px;
+    }
+
+    .fate-button:hover {
+      background: crimson;
+      transform: scale(1.05);
+    }
+
+    .result-text {
+      margin-top: 30px;
+      font-size: 5vw;
+      color: red;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    @media (min-width: 600px) {
+      h1 { font-size: 32px; }
+      .fate-button { font-size: 18px; }
+      .result-text { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Only One Button Lets You Live. Choose...</h1>
+
+  <div class="buttons">
+    <button class="fate-button" onclick="chooseFate(1)">Button 1</button>
+    <button class="fate-button" onclick="chooseFate(2)">Button 2</button>
+    <button class="fate-button" onclick="chooseFate(3)">Button 3</button>
+  </div>
+
+  <div class="result-text" id="result"></div>
+
+  <audio id="wrong" src="assets/death.mp3" preload="auto"></audio>
+  <audio id="correct" src="assets/heartbeat.wav" preload="auto"></audio>
+
+  <script>
+    const result = document.getElementById('result');
+    const wrong = document.getElementById('wrong');
+    const correct = document.getElementById('correct');
+
+    const safeButton = Math.floor(Math.random() * 3) + 1;
+
+    function chooseFate(number) {
+      document.querySelectorAll('.fate-button').forEach(btn => btn.disabled = true);
+
+      const playAudio = (audio) => {
+        audio.play().catch(() => {
+          audio.muted = true;
+          audio.play().then(() => {
+            audio.muted = false;
+          });
+        });
+      };
+
+      if (number === safeButton) {
+        result.textContent = "You survive... for now.";
+        playAudio(correct);
+        result.style.opacity = 1;
+        setTimeout(() => {
+          window.location.href = "level4.html";
+        }, 5000);
+      } else {
+        result.textContent = "You are DEAD.";
+        playAudio(wrong);
+        result.style.opacity = 1;
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    }
+  </script>
+</body>
+</html>

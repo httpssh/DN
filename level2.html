@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level 2 - Ryuk Appears</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <style>
+    @font-face {
+      font-family: "DEATHNOTE Font";
+      src: url("https://db.onlinewebfonts.com/t/dd32798ad43b887f093f144d8ac8e017.ttf") format("truetype");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: black;
+      font-family: 'DEATHNOTE Font', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      padding: 20px;
+    }
+
+    .ryuk-image {
+      max-width: 90%;
+      max-height: 80%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 1;
+    }
+
+    .flicker {
+      animation: flicker 0.1s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 50%, 100% { background-color: black; }
+      25%, 75% { background-color: #111; }
+    }
+
+    .text {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: red;
+      font-size: 6vw;
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 1s forwards 1s;
+      z-index: 2;
+    }
+
+    @media (min-width: 600px) {
+      .text {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="text">He has arrived...</div>
+  <img src="assets/ryuk.png" id="ryuk" class="ryuk-image" alt="Ryuk">
+
+  <audio id="scream" src="assets/scream.mp3" preload="auto"></audio>
+
+  <script>
+    const ryuk = document.getElementById('ryuk');
+    const scream = document.getElementById('scream');
+
+    // Play scream after interaction if needed
+    function startSequence() {
+      setTimeout(() => {
+        document.body.classList.add('flicker');
+        ryuk.style.opacity = 1;
+
+        // Try to play scream (with fallback)
+        scream.play().catch(() => {
+          scream.muted = true;
+          scream.play().then(() => {
+            scream.muted = false;
+          });
+        });
+      }, 1000);
+
+      setTimeout(() => {
+        window.location.href = "level3.html";
+      }, 7000);
+    }
+
+    // Trigger on click for mobile audio policy
+    window.addEventListener("click", () => {
+      if (!window._played) {
+        startSequence();
+        window._played = true;
+      }
+    });
+
+    // Auto-start for desktop
+    if (!/Mobi|Android/i.test(navigator.userAgent)) {
+      startSequence();
+    }
+  </script>
+</body>
+</html>

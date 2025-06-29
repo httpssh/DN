@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level 4 - The Hallway</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    @font-face {
+      font-family: "DEATHNOTE Font";
+      src: url("https://db.onlinewebfonts.com/t/dd32798ad43b887f093f144d8ac8e017.ttf") format("truetype");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: black;
+      color: white;
+      font-family: 'DEATHNOTE Font', sans-serif;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 6vw;
+      margin-bottom: 20px;
+      color: crimson;
+    }
+
+    .flash-btn {
+      background: #111;
+      border: 2px solid crimson;
+      color: red;
+      padding: 15px 30px;
+      font-size: 5vw;
+      cursor: pointer;
+      font-family: 'DEATHNOTE Font';
+      box-shadow: 0 0 10px crimson;
+    }
+
+    .hallway {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black url("assets/hallway.png") center/cover no-repeat;
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: -1;
+    }
+
+    .fade-text {
+      font-size: 4vw;
+      margin-top: 30px;
+      color: red;
+      animation: flicker 1s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { opacity: 0.2; }
+      to { opacity: 1; }
+    }
+
+    .ryuk {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-height: 80%;
+      z-index: 10;
+      display: none;
+    }
+
+    @media (min-width: 600px) {
+      h1 { font-size: 32px; }
+      .flash-btn { font-size: 18px; }
+      .fade-text { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>It’s so dark... use the flashlight!</h1>
+  <button class="flash-btn" onclick="useFlash()">Flashlight 🔦</button>
+  <p class="fade-text">Listen... footsteps...</p>
+
+  <div class="hallway" id="hallway"></div>
+  <img id="ryuk" class="ryuk" src="assets/Shinigami.png" alt="Ryuk">
+
+  <audio id="steps" src="assets/footsteps.wav" preload="auto" loop></audio>
+  <audio id="screech" src="assets/jumpscare.wav" preload="auto"></audio>
+
+  <script>
+    const hallway = document.getElementById('hallway');
+    const steps = document.getElementById('steps');
+    const screech = document.getElementById('screech');
+    const ryukImg = document.getElementById('ryuk');
+    let flashesUsed = 0;
+
+    // Unlock audio playback on first user interaction
+    document.body.addEventListener("click", () => {
+      steps.volume = 0.6;
+      screech.volume = 1;
+      steps.play().catch(() => {});
+    }, { once: true });
+
+    function useFlash() {
+      hallway.style.opacity = 1;
+      flashesUsed++;
+
+      setTimeout(() => {
+        hallway.style.opacity = 0;
+      }, 1000);
+
+      if (flashesUsed === 3) {
+        setTimeout(() => {
+          ryukImg.style.display = "block";
+        }, 1500);
+
+        setTimeout(() => {
+          screech.currentTime = 0;
+          screech.play().catch(err => console.log("Audio error:", err));
+
+          // Show Ryuk for a while then replace screen
+          setTimeout(() => {
+            ryukImg.style.display = "none";
+            document.body.innerHTML = "<h1 style='color: red; font-size: 8vw;'>Go to HELL...</h1>";
+          }, 500);
+        }, 3000);
+
+        setTimeout(() => {
+          window.location.href = "level5.html";
+        }, 6000);
+      }
+    }
+  </script>
+</body>
+</html>

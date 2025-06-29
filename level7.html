@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level 7 - Stay Still</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    @font-face {
+      font-family: "DEATHNOTE Font";
+      src: url("https://db.onlinewebfonts.com/t/dd32798ad43b887f093f144d8ac8e017.ttf") format("truetype");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: black;
+      color: red;
+      font-family: "DEATHNOTE Font", sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      position: relative;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .message {
+      font-size: 5vw;
+      max-width: 90%;
+      animation: flicker 2s infinite;
+      z-index: 2;
+    }
+
+    #countdown {
+      font-size: 10vw;
+      color: crimson;
+      margin-top: 20px;
+      display: none;
+      animation: flicker 1s infinite;
+      z-index: 2;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .escape-link {
+      position: absolute;
+      bottom: 10%;
+      color: crimson;
+      text-decoration: none;
+      font-size: 4.5vw;
+      display: none;
+      animation: blink 1s infinite;
+      z-index: 3;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .screamer {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: black url('assets/jumpscare.jpg') center/contain no-repeat;
+      z-index: 999;
+    }
+
+    .monster {
+      position: absolute;
+      bottom: 0;
+      width: 20vw;
+      max-width: 120px;
+      height: auto;
+      display: none;
+      animation: walk 4s linear forwards;
+      z-index: 1;
+      opacity: 0.6;
+      filter: brightness(0.5);
+    }
+
+    @keyframes walk {
+      0% { left: -30%; bottom: 0; }
+      50% { opacity: 1; }
+      100% { left: 110%; bottom: 0; opacity: 0; }
+    }
+
+    @media (min-width: 600px) {
+      .message { font-size: 24px; }
+      .escape-link { font-size: 18px; }
+      #countdown { font-size: 48px; }
+    }
+  </style>
+</head>
+<body ontouchstart="die()" onclick="die()">
+
+  <div class="message">
+    ⚠️ Do Not Touch The Screen<br>
+    Stay absolutely still or you'll die.
+  </div>
+
+  <div id="countdown">5</div>
+  <a class="escape-link" id="escapeLink" href="level8.html">>> ESCAPE</a>
+  <div class="screamer" id="screamer"></div>
+  <img id="monster" class="monster" src="assets/shadow.png" alt="Monster Shadow">
+
+  <!-- Audio -->
+  <audio id="scream" src="assets/jumpscare.wav" preload="auto"></audio>
+  <audio id="tick" src="assets/tick.mp3" preload="auto"></audio>
+
+  <script>
+    const scream = document.getElementById("scream");
+    const screamer = document.getElementById("screamer");
+    const escapeLink = document.getElementById("escapeLink");
+    const ambience = document.getElementById("ambience");
+    const countdown = document.getElementById("countdown");
+    const tick = document.getElementById("tick");
+    const monster = document.getElementById("monster");
+
+    // Ensure mobile autoplay
+    document.body.addEventListener("click", () => {
+      ambience.play().catch(() => {});
+    }, { once: true });
+
+    function die() {
+      scream.currentTime = 0;
+      scream.play();
+      screamer.style.display = "block";
+
+      setTimeout(() => {
+        location.reload(); // Restart
+      }, 2000);
+    }
+
+    // Trigger countdown and monster walk
+    setTimeout(() => {
+      let timeLeft = 5;
+      countdown.style.display = "block";
+      countdown.textContent = timeLeft;
+
+      // Show shadow
+      monster.style.display = "block";
+
+      const timer = setInterval(() => {
+        tick.currentTime = 0;
+        tick.play().catch(() => {});
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          countdown.style.display = "none";
+          escapeLink.style.display = "block";
+        } else {
+          countdown.textContent = timeLeft;
+        }
+      }, 1000);
+    }, 10000); // After 10 sec of stillness
+  </script>
+</body>
+</html>

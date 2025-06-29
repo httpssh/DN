@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level 5 - Don’t Turn Around</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    @font-face {
+      font-family: "DEATHNOTE Font";
+      src: url("https://db.onlinewebfonts.com/t/dd32798ad43b887f093f144d8ac8e017.ttf") format("truetype");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: black;
+      color: red;
+      font-family: "DEATHNOTE Font", sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 6vw;
+      animation: flicker 1s infinite alternate;
+      max-width: 90%;
+    }
+
+    button {
+      margin-top: 40px;
+      padding: 15px 35px;
+      background: black;
+      color: red;
+      border: 2px solid crimson;
+      font-size: 5vw;
+      cursor: pointer;
+      font-family: "DEATHNOTE Font";
+      box-shadow: 0 0 10px crimson;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: crimson;
+      color: black;
+    }
+
+    .ryuk {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-height: 100%;
+      max-width: 100%;
+      display: none;
+      z-index: 100;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    #fade {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease-in-out;
+    }
+
+    @media (min-width: 600px) {
+      h1 { font-size: 32px; }
+      button { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Don't turn around...</h1>
+  <button onclick="turnAround()">Turn Around 👁️</button>
+
+  <img src="assets/scary1.jpg" class="ryuk" id="ryuk">
+  <div id="fade"></div>
+
+  <audio id="whispers" src="assets/whispers.mp3" preload="auto" loop></audio>
+  <audio id="screech" src="assets/jumpscare.wav" preload="auto"></audio>
+
+  <script>
+    const ryuk = document.getElementById('ryuk');
+    const fade = document.getElementById('fade');
+    const whispers = document.getElementById('whispers');
+    const screech = document.getElementById('screech');
+
+    // Ensure audio plays on mobile
+    document.body.addEventListener("click", () => {
+      whispers.volume = 0.6;
+      whispers.play().catch(() => {});
+    }, { once: true });
+
+    function turnAround() {
+      ryuk.style.display = 'block';
+      screech.currentTime = 0;
+      screech.volume = 1;
+      screech.play().catch(err => console.log("Audio error:", err));
+
+      setTimeout(() => {
+        fade.style.opacity = 1;
+      }, 2000);
+
+      setTimeout(() => {
+        window.location.href = "level6.html";
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
